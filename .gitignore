@@ -1,19 +1,30 @@
-.git/
-.git
-font/
-lua/user/NerdFonts/
-assets/*.mp4
+# Plugin manager
+lazy-lock.json
 
+# Backup files
+*.backup
+*.bak
+*~
 
-# Media
-*.mp4
-*.mkv
-*.gif
+# LSP/Mason
+mason/
+plugin/
 
-# Fonts
-Fonts/
-font/
-lua/user/NerdFonts/
+# Session files
+*.vim
+session/
+sessions/
 
-# Generated assets
-assets/
+# Undo history
+undodir/
+
+# Swap and temp files
+*.swp
+*.swo
+*.tmp
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
