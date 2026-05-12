@@ -418,6 +418,30 @@ require('lazy').setup({
       lazy = true,
     },
 
+    {
+      'echasnovski/mini.move',
+      version = '*',
+      config = function()
+        require('mini.move').setup({
+          mappings = {
+            -- Visual mode (block moving)
+            left       = '<A-Left>',
+            right      = '<A-Right>',
+            down       = '<A-Down>',
+            up         = '<A-Up>',
+            -- Normal mode (line moving)
+            line_left  = '<A-Left>',
+            line_right = '<A-Right>',
+            line_down  = '<A-Down>',
+            line_up    = '<A-Up>',
+          },
+          options = {
+            reindent_linewise = true, -- auto re-indent when moving
+          },
+        })
+      end,
+    },
+
     -- ===========================
     -- Colorschemes (all lazy loaded)
     -- ===========================

@@ -193,44 +193,8 @@ end
 -- ============================================================================
 -- KEYMAPS
 -- ============================================================================
-
--- 1. <leader>ct - Copy most recent yanked item to system clipboard
-vim.keymap.set({'n', 'v'}, '<leader>yt', function()
-    -- In visual mode, first yank the selection
-    if vim.fn.mode():match('[vV]') then
-        vim.cmd('normal! y')
-    end
-    
-    local text = vim.fn.getreg('"')
-    if text and text ~= '' then
-        copy_to_system(text)
-    else
-        vim.notify('Nothing to copy', vim.log.levels.WARN)
-    end
-end, { 
-    silent = true, 
-    desc = 'Recent most Yank to clipboard' 
-})
-
--- 2. <leader>cp - Open yank picker to select from registers
-vim.keymap.set('n', '<leader>yp', function()
-    local registers = get_registers()
-    
-    if #registers == 0 then
-        vim.notify('No yanked items', vim.log.levels.WARN)
-        return
-    end
-    
-    pick_register(registers, function(choice)
-        copy_to_system(choice.content)
-    end)
-end, { 
-    silent = true, 
-    desc = 'Pick register to yank to system' 
-})
-
 -- 3. <leader>pp - Paste last copied item from system clipboard
-vim.keymap.set('n', '<leader>ppp', function()
+vim.keymap.set('n', '<leader>pc', function()
     local text = paste_from_system()
     if text and text ~= '' then
         vim.fn.setreg('+', text)
@@ -244,21 +208,3 @@ end, {
     desc = 'Paste from clipboard' 
 })
 
--- 4. <leader>pk - Pick from registers and paste to editor
-vim.keymap.set('n', '<leader>ppk', function()
-    local registers = get_registers()
-    
-    if #registers == 0 then
-        vim.notify('No yanked items', vim.log.levels.WARN)
-        return
-    end
-    
-    pick_register(registers, function(choice)
-        vim.fn.setreg('+', choice.content)
-        vim.cmd('normal! "+p')
-        vim.notify('✓ Pasted from [' .. choice.reg .. ']', vim.log.levels.INFO)
-    end)
-end, { 
-    silent = true, 
-    desc = 'Pick register to paste' 
-})

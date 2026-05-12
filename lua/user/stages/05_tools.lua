@@ -1,6 +1,3 @@
--- In user/stages/06_lspB.lua
--- Move DAP to the end and defer it
-
 require('user.config.tools.diagnostic')
 vim.defer_fn(function ()
     require('user.config.tools.goto_preview')
@@ -10,3 +7,6 @@ vim.defer_fn(function ()
     require('user.config.tools.navic')
 end, 200)
 
+vim.defer_fn(function()
+    require('user.config.tools.autopairs.autopairs')
+end, 300)
