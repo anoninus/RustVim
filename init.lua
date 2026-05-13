@@ -1,3 +1,12 @@
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "rust",
+  callback = function()
+    vim.opt_local.cindent = false
+    vim.opt_local.smartindent = false
+    vim.opt_local.indentexpr = ""
+  end,
+})
+
 -- Leader set to space 
 vim.o.winborder = "rounded"
 vim.o.pumborder = "rounded"

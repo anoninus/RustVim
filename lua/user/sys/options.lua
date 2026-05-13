@@ -10,15 +10,6 @@ vim.o.errorbells = false
 
 
 
--- Indentation & Formatting
-vim.o.expandtab = true
-vim.o.shiftwidth = 2
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
-vim.o.smartindent = true
-vim.o.textwidth = 0
-vim.o.backspace = 'indent,eol,start'
-
 -- Search
 vim.o.incsearch = true
 vim.o.hlsearch = true
@@ -28,8 +19,8 @@ vim.opt.foldexpr = 'v:lua.vim.lsp.foldexpr()'
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldenable = true
-vim.cmd('syntax on')
-vim.cmd('filetype plugin indent on')
+-- vim.cmd('syntax on')
+-- vim.cmd('filetype plugin indent on')
 
 -- Keymaps: Spelling
 vim.keymap.set('n', '<leader>fw', function()
