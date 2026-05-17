@@ -4,22 +4,22 @@
 return {
   {
     'stevearc/oil.nvim',
-    commit = '975a77c',
+--     commit = '975a77c',
     dependencies = { 'echasnovski/mini.icons' },
     lazy = true,
   },
   {
     'ibhagwan/fzf-lua',
-    commit = '518ab7a',
+--     commit = '518ab7a',
     lazy = true,
   },
   {
     'ggandor/leap.nvim',
-    commit = 'f19d435',
+--     commit = 'f19d435',
   },
   {
     'mikavilpas/yazi.nvim',
-    commit = '5634692',
+--     commit = '5634692',
     event = 'VeryLazy',
     keys = {
       {
@@ -60,7 +60,7 @@ return {
   },
   {
     'kdheepak/lazygit.nvim',
-    commit = 'a04ad0d',
+--     commit = 'a04ad0d',
     lazy = false,
     cmd = {
       'LazyGit',

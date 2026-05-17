@@ -1,6 +1,6 @@
-vim.o.updatetime  = 300   -- NOT 0, that hammers swapfile/CursorHold
+vim.o.updatetime  = 300   -- not 0, that hammers swapfile/cursorhold
 vim.o.ttimeoutlen = 0
-vim.o.timeoutlen  = 100
+vim.o.timeoutlen  = 300
 vim.o.swapfile    = true
 vim.o.confirm     = true
 -- lazyredraw is deprecated in 0.10+, causes issues with some plugins

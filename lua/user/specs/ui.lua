@@ -1,11 +1,11 @@
 return {
     {
         'willothy/nvim-cokeline',
-        commit = '9fbed13',
+--         commit = '9fbed13',
     },
     {
         'goolord/alpha-nvim',
-        commit = '3979b01',
+--         commit = '3979b01',
         event = 'VimEnter',
         dependencies = {
             { 'MaximilianLloyd/ascii.nvim', commit = '70783fe', lazy = false },
@@ -13,7 +13,7 @@ return {
     },
 {
   'stevearc/dressing.nvim',
-        commit = '3a45525',
+--         commit = '3a45525',
   lazy = true, -- loaded via vim.ui hijack above
   opts = {
     input = {
@@ -64,7 +64,7 @@ return {
 },
     {
         'rcarriga/nvim-notify',
-        commit = 'a3020c2',
+--         commit = 'a3020c2',
         init = function()
             local original_notify = vim.notify
             vim.notify = function(...)
@@ -76,7 +76,7 @@ return {
     },
     {
         'beauwilliams/focus.nvim',
-        commit = '4135f97',
+--         commit = '4135f97',
         cmd = { 'FocusSplitNicely', 'FocusSplitCycle', 'FocusToggle' },
     },
 

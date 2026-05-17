@@ -16,7 +16,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
   callback = function()
     -- These only make sense with actual file content
     require('user.ui.core.windows')  -- window management
-    require('user.ui.core.sgt')
   end,
 })
 

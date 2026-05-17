@@ -4,7 +4,7 @@
 return {
     {
         'nvim-mini/mini.notify',
-        commit = '29ec27f',
+--         commit = '29ec27f',
         event = 'VeryLazy',
     },
     {
@@ -14,7 +14,7 @@ return {
     },
     {
         'echasnovski/mini.move',
-        commit = '4d21420',
+--         commit = '4d21420',
         keys = {
             { '<A-Left>',  mode = { 'n', 'v' } },
             { '<A-Right>', mode = { 'n', 'v' } },
@@ -41,7 +41,7 @@ return {
     },
     {
         'echasnovski/mini.icons',
-        commit = 'bac6317',
+--         commit = 'bac6317',
         version = false,
         event = "VeryLazy",
     },
