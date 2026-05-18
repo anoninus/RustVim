@@ -1,7 +1,6 @@
 -- user/config/server/HighLevel/lua_ls.lua
 vim.lsp.config('lua_ls', {
     cmd          = { 'lua-language-server' },  -- ← this is what's missing
-
   filetypes    = { 'lua' },
   root_markers = { '.luarc.json', '.git' },
   settings = {
@@ -14,7 +13,7 @@ vim.lsp.config('lua_ls', {
         unusedLocalExclude = { '_*' },
       },
       workspace = {
-        library         = { vim.env.VIMRUNTIME .. '/lua' },
+  library = vim.api.nvim_get_runtime_file("", true),
         checkThirdParty = false,
         maxPreload      = 2000,
         preloadFileSize = 500,

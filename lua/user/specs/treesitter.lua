@@ -18,6 +18,8 @@ return {
 
             -- 3. enable highlighting per filetype via autocmd
             vim.api.nvim_create_autocmd('FileType', {
+                -- Add desired file types
+                pattern = { 'lua', 'vim', 'toml', 'json' },
                 callback = function()
                     pcall(vim.treesitter.start)
                 end,
