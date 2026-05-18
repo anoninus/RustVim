@@ -2,7 +2,7 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
-        event = { "BufReadPre", "BufNewFile" },
+        ft = { 'lua', 'vim', 'toml', 'json' },
         config = function()
 
             -- 1. configure where parsers live
