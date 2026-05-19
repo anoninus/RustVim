@@ -89,12 +89,9 @@ wk.add({
 -- TOGGLES
 -- ============================================
 wk.add({
-    { '<leader>ui', '<Cmd>IBLToggle<CR>',           desc = 'Indent Lines' },
     { '<leader>un', '<Cmd>set number!<CR>',         desc = 'Line Numbers' },
     { '<leader>ur', '<Cmd>set relativenumber!<CR>', desc = 'Relative Numbers' },
     { '<leader>uw', '<Cmd>set wrap!<CR>',           desc = 'Word Wrap' },
-    { '<leader>us', '<Cmd>set spell!<CR>',          desc = 'Spell Check' },
-    { '<leader>ul', '<Cmd>set list!<CR>',           desc = 'List Chars' },
     { '<leader>uc', '<Cmd>set cursorline!<CR>',     desc = 'Cursor Line' },
     { '<leader>uh', '<Cmd>set hlsearch!<CR>',       desc = 'Highlight Search' },
 })
