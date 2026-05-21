@@ -1,184 +1,203 @@
 -- statusline.lua
--- Requires Nerd Font. Tuned for tokyonight.nvim.
+-- Requires Nerd Font · Tuned for tokyonight.nvim
+-- Fast: LSP cached, no repeated vim.diagnostic calls on every redraw tick
 
--- vim.o.showcmdloc = "statusline"
-vim.o.showcmd = false
-vim.o.cmdheight  = 1
+vim.o.showcmd   = false
+vim.o.cmdheight = 1
 
--- ── Highlight groups (tokyonight palette) ────────────────────────────────────
+-- ── Palette (tokyonight-night) ────────────────────────────────────────────────
+local P = {
+  bg      = "#16161e",
+  bg_dark = "#13131a",
+  fg      = "#a9b1d6",
+  fg_dim  = "#565f89",
+  blue    = "#7aa2f7",
+  green   = "#9ece6a",
+  purple  = "#bb9af7",
+  red     = "#f7768e",
+  yellow  = "#e0af68",
+  cyan    = "#73daca",
+  white   = "#c0caf5",
+  dark1   = "#1a1b26",
+  dark2   = "#1e2030",
+}
+
+-- ── Highlight groups ──────────────────────────────────────────────────────────
 local function set_hls()
-    local hls = {
-        -- Mode pills
-        StatusNormal     = { fg = "#1a1b26", bg = "#7aa2f7", bold = true },
-        StatusInsert     = { fg = "#1a1b26", bg = "#9ece6a", bold = true },
-        StatusVisual     = { fg = "#1a1b26", bg = "#bb9af7", bold = true },
-        StatusReplace    = { fg = "#1a1b26", bg = "#f7768e", bold = true },
-        StatusCommand    = { fg = "#1a1b26", bg = "#e0af68", bold = true },
-        StatusOther      = { fg = "#1a1b26", bg = "#73daca", bold = true },
-        -- Surrounding powerline separators (same bg as pill → bar bg)
-        StatusNormalSep  = { fg = "#7aa2f7", bg = "#16161e" },
-        StatusInsertSep  = { fg = "#9ece6a", bg = "#16161e" },
-        StatusVisualSep  = { fg = "#bb9af7", bg = "#16161e" },
-        StatusReplaceSep = { fg = "#f7768e", bg = "#16161e" },
-        StatusCommandSep = { fg = "#e0af68", bg = "#16161e" },
-        StatusOtherSep   = { fg = "#73daca", bg = "#16161e" },
-        -- Bar chrome
-        StatusBar        = { fg = "#a9b1d6", bg = "#16161e" },
-        StatusBarDim     = { fg = "#565f89", bg = "#16161e" },
-        StatusFile       = { fg = "#c0caf5", bg = "#16161e", bold = true },
-        StatusModified   = { fg = "#e0af68", bg = "#16161e", bold = true },
-        StatusRO         = { fg = "#f7768e", bg = "#16161e" },
-        -- LSP & diagnostics
-        StatusLSP        = { fg = "#7aa2f7", bg = "#16161e" },
-        StatusError      = { fg = "#f7768e", bg = "#16161e", bold = true },
-        StatusWarn       = { fg = "#e0af68", bg = "#16161e", bold = true },
-        StatusInfo       = { fg = "#7aa2f7", bg = "#16161e" },
-        StatusHint       = { fg = "#1abc9c", bg = "#16161e" },
-        -- Right side
-        StatusCoords     = { fg = "#c0caf5", bg = "#1e2030", bold = true },
-        StatusCoordsSep  = { fg = "#1e2030", bg = "#16161e" },
-        StatusPercent    = { fg = "#565f89", bg = "#16161e" },
-        StatusShowCmd    = { fg = "#e0af68", bg = "#16161e" },
-    }
-    for name, val in pairs(hls) do
-        vim.api.nvim_set_hl(0, name, val)
-    end
+  local hls = {
+    -- Mode pills
+    StatusNormal     = { fg = P.dark1, bg = P.blue,   bold = true },
+    StatusInsert     = { fg = P.dark1, bg = P.green,  bold = true },
+    StatusVisual     = { fg = P.dark1, bg = P.purple, bold = true },
+    StatusReplace    = { fg = P.dark1, bg = P.red,    bold = true },
+    StatusCommand    = { fg = P.dark1, bg = P.yellow, bold = true },
+    StatusOther      = { fg = P.dark1, bg = P.cyan,   bold = true },
+    -- Powerline separators (pill → bar)
+    StatusNormalSep  = { fg = P.blue,   bg = P.bg },
+    StatusInsertSep  = { fg = P.green,  bg = P.bg },
+    StatusVisualSep  = { fg = P.purple, bg = P.bg },
+    StatusReplaceSep = { fg = P.red,    bg = P.bg },
+    StatusCommandSep = { fg = P.yellow, bg = P.bg },
+    StatusOtherSep   = { fg = P.cyan,   bg = P.bg },
+    -- Bar chrome
+    StatusBar        = { fg = P.fg,     bg = P.bg },
+    StatusBarDim     = { fg = P.fg_dim, bg = P.bg },
+    StatusFile       = { fg = P.white,  bg = P.bg,    bold = true },
+    StatusModified   = { fg = P.yellow, bg = P.bg,    bold = true },
+    StatusRO         = { fg = P.red,    bg = P.bg },
+    -- Git
+    StatusGit        = { fg = P.fg_dim, bg = P.bg },
+    -- LSP & diagnostics
+    StatusLSP        = { fg = P.blue,   bg = P.bg },
+    StatusError      = { fg = P.red,    bg = P.bg,    bold = true },
+    StatusWarn       = { fg = P.yellow, bg = P.bg,    bold = true },
+    StatusInfo       = { fg = P.blue,   bg = P.bg },
+    StatusHint       = { fg = P.cyan,   bg = P.bg },
+    -- Right block
+    StatusCoords     = { fg = P.white,  bg = P.dark2, bold = true },
+    StatusCoordsSep  = { fg = P.dark2,  bg = P.bg },
+    StatusPercent    = { fg = P.fg_dim, bg = P.bg },
+  }
+  for name, val in pairs(hls) do
+    vim.api.nvim_set_hl(0, name, val)
+  end
 end
 
 set_hls()
+vim.api.nvim_create_autocmd("ColorScheme", { callback = set_hls })
 
--- Re-apply after colorscheme changes so we always win
-vim.api.nvim_create_autocmd("ColorScheme", {
-    callback = set_hls,
-})
-
--- ── Helpers ──────────────────────────────────────────────────────────────────
-local mode_map = {
-    n       = { label = "NORMAL", hl = "Normal" },
-    no      = { label = "N·OP", hl = "Normal" },
-    nov     = { label = "N·OP", hl = "Normal" },
-    niI     = { label = "NORMAL", hl = "Normal" },
-    niR     = { label = "NORMAL", hl = "Normal" },
-    niV     = { label = "NORMAL", hl = "Normal" },
-    i       = { label = "INSERT", hl = "Insert" },
-    ic      = { label = "INSERT", hl = "Insert" },
-    ix      = { label = "INSERT", hl = "Insert" },
-    R       = { label = "REPLACE", hl = "Replace" },
-    Rc      = { label = "REPLACE", hl = "Replace" },
-    Rx      = { label = "REPLACE", hl = "Replace" },
-    Rv      = { label = "V·RPLC", hl = "Replace" },
-    v       = { label = "VISUAL", hl = "Visual" },
-    V       = { label = "V·LINE", hl = "Visual" },
-    ["\22"] = { label = "V·BLOCK", hl = "Visual" },
-    s       = { label = "SELECT", hl = "Visual" },
-    S       = { label = "S·LINE", hl = "Visual" },
-    ["\19"] = { label = "S·BLOCK", hl = "Visual" },
-    c       = { label = "COMMAND", hl = "Command" },
-    cv      = { label = "EX", hl = "Command" },
-    ce      = { label = "EX", hl = "Command" },
-    r       = { label = "PROMPT", hl = "Other" },
-    rm      = { label = "MORE", hl = "Other" },
-    ["r?"]  = { label = "CONFIRM", hl = "Other" },
-    ["!"]   = { label = "SHELL", hl = "Other" },
-    t       = { label = "TERM", hl = "Insert" },
+-- ── Mode map ──────────────────────────────────────────────────────────────────
+local MODE_MAP = {
+  n      = { label = " NORMAL ",  hl = "Normal"  },
+  no     = { label = " O-PEND ",  hl = "Normal"  },
+  nov    = { label = " O-PEND ",  hl = "Normal"  },
+  niI    = { label = " NORMAL ",  hl = "Normal"  },
+  niR    = { label = " NORMAL ",  hl = "Normal"  },
+  i      = { label = " INSERT ",  hl = "Insert"  },
+  ic     = { label = " INSERT ",  hl = "Insert"  },
+  ix     = { label = " INSERT ",  hl = "Insert"  },
+  v      = { label = " VISUAL ",  hl = "Visual"  },
+  V      = { label = " V-LINE ",  hl = "Visual"  },
+  ["\22"]= { label = " V-BLOCK",  hl = "Visual"  },
+  s      = { label = " SELECT ",  hl = "Visual"  },
+  S      = { label = " S-LINE ",  hl = "Visual"  },
+  R      = { label = " REPLACE",  hl = "Replace" },
+  Rv     = { label = " V-REPL ",  hl = "Replace" },
+  c      = { label = " COMMAND",  hl = "Command" },
+  cv     = { label = "   EX   ",  hl = "Command" },
+  r      = { label = "  ENTER ",  hl = "Other"   },
+  rm     = { label = "  MORE  ",  hl = "Other"   },
+  ["r?"] = { label = " CONFIRM",  hl = "Other"   },
+  ["!"]  = { label = "  SHELL ",  hl = "Other"   },
+  t      = { label = "  TERM  ",  hl = "Other"   },
 }
 
-local function hl(name)
-    return "%#Status" .. name .. "#"
+-- ── LSP cache (refresh every ~2 s via timer, not every redraw) ───────────────
+local _lsp_str   = ""
+local _lsp_timer = nil
+
+local function refresh_lsp()
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
+  if #clients == 0 then
+    _lsp_str = ""
+    return
+  end
+  local names = {}
+  for _, c in ipairs(clients) do
+    -- skip null-ls / none-ls noise if you prefer cleaner display
+    if c.name ~= "null-ls" and c.name ~= "none-ls" then
+      table.insert(names, c.name)
+    end
+  end
+  _lsp_str = #names > 0 and ("  " .. table.concat(names, " · ") .. " ") or ""
 end
 
-local function mode_info()
-    local m = vim.fn.mode(1)
-    return mode_map[m] or { label = m, hl = "Other" }
+-- Refresh on LSP attach/detach events (accurate) + light periodic fallback
+vim.api.nvim_create_autocmd({ "LspAttach", "LspDetach", "BufEnter" }, {
+  callback = function()
+    vim.defer_fn(refresh_lsp, 50)
+  end,
+})
+
+-- ── Diagnostics ───────────────────────────────────────────────────────────────
+-- Icons: error  warn  info  hint
+local DIAG_ICONS = { " ", " ", " ", " " }
+local DIAG_HLS   = { "Error", "Warn", "Info", "Hint" }
+
+local function diagnostics_str()
+  local counts = { 0, 0, 0, 0 }
+  for _, d in ipairs(vim.diagnostic.get(0)) do
+    local s = d.severity
+    if s and counts[s] then counts[s] = counts[s] + 1 end
+  end
+
+  local parts = {}
+  for i = 1, 4 do
+    if counts[i] > 0 then
+      parts[#parts + 1] = "%#Status" .. DIAG_HLS[i] .. "#" .. DIAG_ICONS[i] .. counts[i]
+    end
+  end
+  if #parts == 0 then return "" end
+  return " " .. table.concat(parts, "%#StatusBar# ") .. "%#StatusBar# "
 end
 
-local function lsp_clients()
-    local clients = vim.lsp.get_clients({ bufnr = 0 })
-    if #clients == 0 then return nil end
-    local names = {}
-    for _, c in ipairs(clients) do
-        table.insert(names, c.name)
-    end
-    return table.concat(names, " · ")
-end
-
-local diag_icons = { " ", " ", " ", " " } -- error warn info hint (Nerd Font)
-
-local function diagnostics()
-    local counts = { 0, 0, 0, 0 }
-    for _, item in ipairs(vim.diagnostic.get(0)) do
-        if item.severity and counts[item.severity] then
-            counts[item.severity] = counts[item.severity] + 1
-        end
-    end
-
-    local hls   = { "Error", "Warn", "Info", "Hint" }
-    local parts = {}
-    for i = 1, 4 do
-        if counts[i] > 0 then
-            table.insert(parts, hl(hls[i]) .. diag_icons[i] .. counts[i])
-        end
-    end
-    return parts -- array; empty = no diagnostics
+-- ── Git branch (gitsigns stores head in b:gitsigns_status_dict.head) ──────────
+local function git_branch()
+  local ok, dict = pcall(vim.api.nvim_buf_get_var, 0, "gitsigns_status_dict")
+  if not ok or type(dict) ~= "table" then return "" end
+  local head = dict.head
+  if not head or head == "" then return "" end
+  return "  " .. head .. " "
 end
 
 -- ── Main statusline ───────────────────────────────────────────────────────────
 function _G.Statusline()
-  local mi  = mode_info()
-  local mhl = mi.hl
-  
-  -- Powerline separator glyphs (Make sure your Nerd Font is active!)
-  local sep_r = ""  -- U+E0B0 (Solid right arrow)
-  local sep_l = ""  -- U+E0B2 (Solid left arrow)
+  local mode_key = vim.api.nvim_get_mode().mode
+  local mode     = MODE_MAP[mode_key] or { label = " " .. mode_key .. " ", hl = "Other" }
+  local mhl      = mode.hl  -- e.g. "Normal"
 
-  -- Initial base components
-  local parts = {
-    hl(mhl), "  ", mi.label, " ",
-    hl(mhl .. "Sep"), sep_r,
-    hl("File"), "  %t ",
-  }
+  -- ── LEFT ─────────────────────────────────────────────────────────────────
+  -- Mode pill + powerline arrow
+  local left = "%#Status" .. mhl .. "#" .. mode.label
+             .. "%#Status" .. mhl .. "Sep#" .. ""
+             .. "%#StatusFile# %t"   -- filename (tail)
 
-  -- 1. Safely inject Modified flag via Lua (Prevents highlight bleeding/text leak)
+  -- Modified / readonly flags
   if vim.bo.modified then
-    table.insert(parts, hl("Modified") .. " ● ")
+    left = left .. "%#StatusModified# ●"
   end
-
-  -- 2. Safely inject Readonly flag via Lua
   if vim.bo.readonly then
-    table.insert(parts, hl("RO") .. "  ") -- Swapped with a padlock icon if preferred, or use "  "
+    left = left .. "%#StatusRO# "
   end
 
-  -- 3. Append Left-Middle elements
-  vim.list_extend(parts, {
-    hl("BarDim"), "%{get(b:,'gitsigns_head','') != '' ? '  ' .. get(b:,'gitsigns_head','') .. ' ' : ''}",
-    hl("Bar"), "%=",
-    -- hl("ShowCmd"), "%S "
-  })
-
-  -- 4. Diagnostics section
-  local diag_parts = diagnostics()
-  if #diag_parts > 0 then
-    table.insert(parts, hl("Bar") .. " ")
-    table.insert(parts, table.concat(diag_parts, hl("Bar") .. "  "))
-    table.insert(parts, hl("Bar") .. " ")
+  -- Git branch
+  local branch = git_branch()
+  if branch ~= "" then
+    left = left .. "%#StatusGit#" .. branch
   end
 
-  -- 5. LSP section
-  local lsp = lsp_clients()
-  if lsp then
-    table.insert(parts, hl("LSP") .. "  " .. lsp .. " ")
-  end
+  -- ── CENTRE (spacer) ───────────────────────────────────────────────────────
+  local center = "%#StatusBar#%="
 
-  -- 6. Append Right side elements
-  vim.list_extend(parts, {
-    hl("Bar"), "%=",
-    hl("BarDim"), "%{&filetype != '' ? &filetype .. ' ' : ''}",
-    hl("CoordsSep"), sep_l,
-    hl("Coords"), "  %l : %c ",
-    hl("BarDim"), " %p%% "
-  })
+  -- ── RIGHT ─────────────────────────────────────────────────────────────────
+  -- Diagnostics
+  local diag = diagnostics_str()
 
-  return table.concat(parts)
+  -- LSP name (cached)
+  local lsp = _lsp_str ~= "" and ("%#StatusLSP#" .. _lsp_str) or ""
+
+  -- Filetype
+  local ft = vim.bo.filetype
+  local ft_str = ft ~= "" and ("%#StatusBarDim# " .. ft .. " ") or ""
+
+  -- Coords block with powerline reverse arrow
+  local coords = "%#StatusCoordsSep#"
+               .. "%#StatusCoords#  %l : %-3c"
+               .. "%#StatusPercent#  %p%% "
+
+  local right = diag .. lsp .. ft_str .. center .. coords
+
+  return left .. center .. right
 end
 
 vim.o.statusline = "%!v:lua.Statusline()"

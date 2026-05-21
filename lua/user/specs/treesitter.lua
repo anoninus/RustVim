@@ -2,7 +2,7 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
-        ft = { 'lua', 'vim', 'rust', 'toml', 'json' },
+        ft = { 'lua', 'vim', 'toml', 'json' },
         config = function()
             -- 1. configure where parsers live
             require('nvim-treesitter').setup({

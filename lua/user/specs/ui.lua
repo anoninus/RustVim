@@ -53,18 +53,6 @@ return {
         },
 
     },
-    -- {
-    --     'rcarriga/nvim-notify',
-    --     --         commit = 'a3020c2',
-    --     init = function()
-    --         local original_notify = vim.notify
-    --         vim.notify = function(...)
-    --             vim.notify = original_notify
-    --             require('lazy').load({ plugins = { 'nvim-notify' } })
-    --             vim.notify(...)
-    --         end
-    --     end,
-    -- },
     {
         'beauwilliams/focus.nvim',
         --         commit = '4135f97',
@@ -108,40 +96,4 @@ return {
             })
         end
     },
-
-    {
-        'folke/noice.nvim',
-        event = 'VeryLazy',
-        dependencies = {
-            'MunifTanjim/nui.nvim',
-        },
-        init = function()
-            -- Prevent noice from ever overriding vim.notify
-            vim.g.noice_notify_enabled = false
-        end,
-        opts = {
-            messages = {
-                enabled = false, -- hands ALL cmdline messages back to neovim default / mini.notify
-            },
-            notify = { enabled = false },
-            lsp = {
-                progress = { enabled = false },
-                hover = { enabled = true },
-                message = { enabled = false },
-                override = {
-                    ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-                    ['vim.lsp.util.stylize_markdown'] = true,
-                    ['cmp.entry.get_documentation'] = true,
-                },
-            },
-            presets = {
-                bottom_search = false,
-                command_palette = true,
-                long_message_to_split = true,
-                inc_rename = false,
-            },
-            stages = "static",
-        },
-    },
-
 }
