@@ -1,49 +1,12 @@
 # 🌙 nvim-termux
 
-> The just work distro that works out of the box for Neovim 0.12.1
+> The just-work distro that works out of the box for Neovim 0.12+
 
-![Neovim](https://img.shields.io/badge/Neovim-0.10%2B-57A143?style=flat-square&logo=neovim)
+![Neovim](https://img.shields.io/badge/Neovim-0.12%2B-57A143?style=flat-square&logo=neovim)
 ![Platform](https://img.shields.io/badge/Platform-Termux-black?style=flat-square)
 ![Theme](https://img.shields.io/badge/Theme-tokyonight--moon-7aa2f7?style=flat-square)
 ![Plugin Manager](https://img.shields.io/badge/Plugins-lazy.nvim-ff6b6b?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-
----
-
-## ✨ Features
-
-- **Staged boot system** — 7 numbered stages load in strict dependency order; nothing runs before it's needed
-- **Aggressive lazy loading** — LSP defers until `BufReadPre`, autopairs until `InsertEnter`, snippets until `InsertEnter`
-- **Custom autosave** — built-in debounced autosave module with Conform/LSP format integration and per-filetype allow/deny lists
-- **Inline code runner** — run Rust, Python, Go, C/C++, JS, TS, Lua, Bash and more directly from the buffer
-- **Full LSP coverage** — 11 language servers across Game Dev, Systems, Web, Scripting and Utilities
-- **FZF-powered everything** — find files, live grep, diagnostics, git, sessions — all routed through fzf-lua
-- **Termux-aware** — PATH, clipboard (`termux-clipboard-get`), and home/root paths all auto-detect Termux
-- **Built-in profiler** — `require()`-hooking profiler + spec timing logger for startup optimization
-- **Custom statusline** — hand-crafted, no plugin dependency, with LSP caching and tokyonight palette
-- **Which-key conflict checker** — `:CheckKeymaps` user command detects leader binding collisions
-
----
-
-## 📋 Requirements
-
-| Requirement | Version |
-|---|---|
-| Neovim | `0.12+` (uses `vim.lsp.config`, `vim.lsp.enable`) |
-| Termux | Any recent version |
-| Nerd Font | Required for icons in statusline, cokeline, fzf |
-| `git` | For lazy.nvim bootstrap |
-| `fzf` | For fzf-lua |
-| `fd` | For file finding |
-| `ripgrep` | For live grep |
-
-Optional LSP servers (install via `pkg` or `npm`/`cargo`/`pip`):
-
-```
-lua-language-server  pyright  clangd  rust-analyzer
-bash-language-server  marksman  vscode-json-language-server
-vscode-css-language-server  vscode-html-language-server  gopls  typescript-language-server
-```
 
 ---
 
@@ -54,75 +17,97 @@ vscode-css-language-server  vscode-html-language-server  gopls  typescript-langu
 mv ~/.config/nvim ~/.config/nvim.bak
 
 # Clone
-git clone  --depth=1 https://github.com/anoninus/arch-nvim ~/.config/nvim
+git clone --depth=1 https://github.com/anoninus/arch-nvim ~/.config/nvim
 
 # Launch Neovim — lazy.nvim bootstraps automatically
 nvim
 ```
 
 > [!IMPORTANT]
-> Make sure to do `:Lazy restore` + `:Lazy install`
-> On first launch, lazy.nvim will not automatically install plugins.
-> LSP servers must be installed separately.
+> Run `:Lazy restore` then `:Lazy install` after first launch.
+> lazy.nvim will **not** auto-install plugins on its own.
+> LSP servers must be installed separately via `pkg` / `npm` / `cargo` / `pip`.
 
 ---
 
-## 🗂️ Directory Structure
+## 📋 Requirements
 
+| Requirement | Version / Notes |
+|---|---|
+| Neovim | `0.12+` — uses `vim.lsp.config`, `vim.lsp.enable` |
+| Termux | Any recent version |
+| Nerd Font | Required for icons in statusline, cokeline, fzf |
+| `git` | For lazy.nvim bootstrap |
+| `fzf` | For fzf-lua |
+| `fd` | For file finding |
+| `ripgrep` | For live grep |
+
+**Optional LSP servers:**
 ```
-~/.config/nvim/
-├── init.lua                        # Entry point: options → staged loader → colorscheme
-└── lua/user/
-    ├── stages/                     # Boot pipeline (loaded in numeric order)
-    │   ├── 01_sys.lua              # env, plugin manager, clipboard, notify
-    │   ├── 02_uiCore.lua           # cokeline, statusline, indent lines
-    │   ├── 03_mini.lua             # mini.icons
-    │   ├── 04_server.lua           # LSP servers (deferred to BufReadPre)
-    │   ├── 05_tools.lua            # diagnostics, formatter, autopairs
-    │   ├── 06_ide.lua              # autosave, runner, which-key, fzf, oil, sessions, terminal
-    │   └── 07_other.lua            # reserved
-    ├── specs/                      # lazy.nvim plugin declarations
-    │   ├── colorschemes.lua
-    │   ├── completion.lua
-    │   ├── core.lua
-    │   ├── editor.lua
-    │   ├── explorer.lua
-    │   ├── formatting.lua
-    │   ├── lsp.lua
-    │   ├── mini.lua
-    │   ├── session.lua
-    │   ├── snippets.lua
-    │   ├── treesitter.lua
-    │   ├── ui.lua
-    │   └── utility.lua
-    ├── config/
-    │   ├── ide/
-    │   │   ├── file/               # fzf.lua, oil.lua
-    │   │   └── ide/                # autosave, runner, sessions, terminal, which-key, undotree
-    │   ├── server/                 # LSP configs (by category)
-    │   │   ├── GameDev/            # gdscript
-    │   │   ├── HighLevel/          # lua_ls, pyright
-    │   │   ├── LowLevel/           # clangd, rust_analyzer
-    │   │   ├── Productive/         # bash_ls, marksman
-    │   │   ├── Utilities/          # jsonls
-    │   │   └── Web/                # cssls, gopls, html, ts_ls
-    │   └── tools/                  # lsp.lua, diagnostic, formatter, autopairs, luasnip, navic
-    ├── sys/                        # Core system modules
-    │   ├── options.lua             # Leader, vim.o settings
-    │   ├── plugins.lua             # lazy.nvim setup
-    │   ├── env.lua                 # Termux PATH setup
-    │   ├── lazy_map.lua            # Manual lazy-load keymaps
-    │   ├── last_pos.lua            # Restore cursor on BufReadPost
-    │   ├── paste_from_sys.lua      # Termux clipboard paste
-    │   └── profiler.lua            # Startup profiler
-    ├── mini/                       # mini.nvim module configs
-    │   ├── mini_icons.lua
-    │   └── mini_notify.lua
-    └── ui/core/                    # UI components
-        ├── cokeline.lua            # Buffer tabline
-        ├── statusline.lua          # Custom statusline
-        └── ibl.lua                 # Indent lines (ibl + mini.indentscope)
+lua-language-server  pyright  clangd  rust-analyzer
+bash-language-server  marksman  vscode-json-language-server
+vscode-css-language-server  vscode-html-language-server  gopls  typescript-language-server
 ```
+
+---
+
+## ✨ Features
+
+- **Staged boot system** — 7 numbered stages load in strict dependency order; nothing runs before it's ready
+- **Aggressive lazy loading** — LSP defers until `BufReadPre`, autopairs and snippets until `InsertEnter`
+- **Custom autosave** — debounced module with Conform/LSP format integration and per-filetype allow/deny lists
+- **Inline code runner** — run Rust, Python, Go, C/C++, JS, TS, Lua, Bash and more directly from the buffer
+- **Full LSP coverage** — 12 language servers across Game Dev, Systems, Web, Scripting and Utilities
+- **FZF-powered everything** — files, live grep, diagnostics, git, sessions — all through fzf-lua
+- **Termux-aware** — PATH, clipboard (`termux-clipboard-get`), and home/root paths all auto-detect Termux
+- **Built-in profiler** — `require()`-hooking profiler + spec timing logger for startup optimization
+- **Custom statusline** — hand-crafted, no plugin dependency, with LSP caching and tokyonight palette
+- **Which-key conflict checker** — `:CheckKeymaps` detects leader binding collisions at runtime
+
+---
+
+## ⌨️ Keybindings
+
+**Leader:** `<Space>` &nbsp;|&nbsp; **Local Leader:** `'`
+
+→ Full keymap reference: [Keymaps.md](./READ/Keymaps.md)
+
+---
+
+## 🌍 Language Server Coverage
+
+| Category | Language | Server |
+|---|---|---|
+| Game Dev | GDScript | `gdscript` |
+| High Level | Lua | `lua_ls` |
+| High Level | Python | `pyright` |
+| Low Level | C / C++ | `clangd` |
+| Low Level | Rust | `rust_analyzer` |
+| Scripting | Bash / Sh | `bashls` |
+| Scripting | Markdown | `marksman` |
+| Utilities | JSON | `jsonls` |
+| Web | CSS / SCSS | `cssls` |
+| Web | Go | `gopls` |
+| Web | HTML | `html` |
+| Web | TypeScript / JavaScript | `ts_ls` |
+
+> All servers load on first `BufReadPre` — zero startup overhead.
+
+---
+
+## 🛠️ User Commands
+
+| Command | Description |
+|---|---|
+| `:CheckKeymaps` | Detect leader key binding conflicts |
+| `:DiagYankWhole` | Yank all diagnostics for current buffer |
+| `:DiagYankWorkspace` | Yank all workspace diagnostics |
+| `:SnippetDebug` | Debug snippet loading for current filetype |
+| `:SnippetLoad` | Manually load snippets |
+| `:AutosaveToggle` | Toggle autosave |
+| `:AutosaveToggleFormat` | Toggle format-on-autosave |
+| `:AutosaveToggleNotify` | Toggle autosave notifications |
+| `:ProfilerReport` | Generate startup profile report |
 
 ---
 
@@ -206,37 +191,68 @@ nvim
 
 ---
 
-## 🌍 Language Server Coverage
+<details>
+<summary>🗂️ Directory Structure</summary>
 
-| Category | Language | Server |
-|---|---|---|
-| Game Dev | GDScript | `gdscript` |
-| High Level | Lua | `lua_ls` |
-| High Level | Python | `pyright` |
-| Low Level | C / C++ | `clangd` |
-| Low Level | Rust | `rust_analyzer` |
-| Scripting | Bash / Sh | `bashls` |
-| Scripting | Markdown | `marksman` |
-| Utilities | JSON | `jsonls` |
-| Web | CSS / SCSS | `cssls` |
-| Web | Go | `gopls` |
-| Web | HTML | `html` |
-| Web | TypeScript / JavaScript | `ts_ls` |
+```
+~/.config/nvim/
+├── init.lua                        # Entry point: options → staged loader → colorscheme
+└── lua/user/
+    ├── stages/                     # Boot pipeline (loaded in numeric order)
+    │   ├── 01_sys.lua              # env, plugin manager, clipboard, notify
+    │   ├── 02_uiCore.lua           # cokeline, statusline, indent lines
+    │   ├── 03_mini.lua             # mini.icons
+    │   ├── 04_server.lua           # LSP servers (deferred to BufReadPre)
+    │   ├── 05_tools.lua            # diagnostics, formatter, autopairs
+    │   ├── 06_ide.lua              # autosave, runner, which-key, fzf, oil, sessions, terminal
+    │   └── 07_other.lua            # reserved
+    ├── specs/                      # lazy.nvim plugin declarations
+    │   ├── colorschemes.lua
+    │   ├── completion.lua
+    │   ├── core.lua
+    │   ├── editor.lua
+    │   ├── explorer.lua
+    │   ├── formatting.lua
+    │   ├── lsp.lua
+    │   ├── mini.lua
+    │   ├── session.lua
+    │   ├── snippets.lua
+    │   ├── treesitter.lua
+    │   ├── ui.lua
+    │   └── utility.lua
+    ├── config/
+    │   ├── ide/
+    │   │   ├── file/               # fzf.lua, oil.lua
+    │   │   └── ide/                # autosave, runner, sessions, terminal, which-key, undotree
+    │   ├── server/                 # LSP configs (by category)
+    │   │   ├── GameDev/            # gdscript
+    │   │   ├── HighLevel/          # lua_ls, pyright
+    │   │   ├── LowLevel/           # clangd, rust_analyzer
+    │   │   ├── Productive/         # bash_ls, marksman
+    │   │   ├── Utilities/          # jsonls
+    │   │   └── Web/                # cssls, gopls, html, ts_ls
+    │   └── tools/                  # lsp.lua, diagnostic, formatter, autopairs, luasnip, navic
+    ├── sys/                        # Core system modules
+    │   ├── options.lua             # Leader, vim.o settings
+    │   ├── plugins.lua             # lazy.nvim setup
+    │   ├── env.lua                 # Termux PATH setup
+    │   ├── lazy_map.lua            # Manual lazy-load keymaps
+    │   ├── last_pos.lua            # Restore cursor on BufReadPost
+    │   ├── paste_from_sys.lua      # Termux clipboard paste
+    │   └── profiler.lua            # Startup profiler
+    ├── mini/                       # mini.nvim module configs
+    │   ├── mini_icons.lua
+    │   └── mini_notify.lua
+    └── ui/core/                    # UI components
+        ├── cokeline.lua            # Buffer tabline
+        ├── statusline.lua          # Custom statusline
+        └── ibl.lua                 # Indent lines (ibl + mini.indentscope)
+```
 
-All servers load on first `BufReadPre` — zero startup overhead.
+</details>
 
----
-
-## ⌨️ Keybindings
-
-**Leader:** `<Space>`  
-**Local Leader:** `'`
-
-Read about keymaps at : [Key-bindings](./READ/Keymaps.lua)
-
----
-
-## ⚙️ Notable Design Decisions
+<details>
+<summary>⚙️ Notable Design Decisions</summary>
 
 **Staged boot** — `init.lua` auto-discovers and numerically sorts files in `lua/user/stages/`, loading them in order. Adding a new stage is as simple as dropping a file named `08_something.lua`.
 
@@ -250,25 +266,21 @@ Read about keymaps at : [Key-bindings](./READ/Keymaps.lua)
 
 **Treesitter is optional** — loaded on demand with `<leader>T` or `<leader>lot`. Not auto-attached on `BufRead` to keep startup fast on mobile hardware.
 
----
+</details>
 
-## 🛠️ User Commands
+<details>
+<summary>📊 Performance & Profiling</summary>
 
-| Command | Description |
-|---|---|
-| `:CheckKeymaps` | Detect leader key binding conflicts |
-| `:DiagYankWhole` | Yank all diagnostics for current buffer |
-| `:DiagYankWorkspace` | Yank all workspace diagnostics |
-| `:SnippetDebug` | Debug snippet loading for current filetype |
-| `:SnippetLoad` | Manually load snippets |
-| `:AutosaveToggle` | Toggle autosave |
-| `:AutosaveToggleFormat` | Toggle format-on-autosave |
-| `:AutosaveToggleNotify` | Toggle autosave notifications |
-| `:ProfilerReport` | Generate startup profile report |
+The config ships with two profiling tools:
 
----
+**Spec timer** — swap `plugins.lua` for `_time_plugins.lua` in `01_sys.lua` to log per-spec load times to `~/.cache/nvim/spec_times.log`.
 
-## 🎨 Colorscheme
+**Require profiler** — uncomment `require("user.sys.profiler")` at the top of `init.lua` to get a full report of every `require()` call above 0.5ms, written to `~/.config/nvim/profiler_report.txt` after `UIEnter`.
+
+</details>
+
+<details>
+<summary>🎨 Colorscheme Details</summary>
 
 **tokyonight-moon** with custom overrides:
 
@@ -277,15 +289,7 @@ Read about keymaps at : [Key-bindings](./READ/Keymaps.lua)
 - No italics anywhere (comments, keywords, functions, variables)
 - Statusline uses a hand-tuned tokyonight palette defined inline
 
----
-
-## 📊 Performance
-
-The config ships with two profiling tools:
-
-**Spec timer** — swap `plugins.lua` for `_time_plugins.lua` in `01_sys.lua` to log per-spec load times to `~/.cache/nvim/spec_times.log`.
-
-**Require profiler** — uncomment `require("user.sys.profiler")` at the top of `init.lua` to get a full report of every `require()` call above 0.5ms, written to `~/.config/nvim/profiler_report.txt` after `UIEnter`.
+</details>
 
 ---
 
