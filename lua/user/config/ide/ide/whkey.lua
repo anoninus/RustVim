@@ -35,7 +35,7 @@ wk.add({
     { '<leader>q', group = '󰗼 Quit' },
     { '<leader>r', group = '󰑓 Reload' },
     { '<leader>s', group = '󰆓 Sessions' },
-    { '<leader>t', group = '󰆍 Terminal' },
+    { '<leader>t', group = '󰆍 Task' },
     { '<leader>u', group = '󰔡 Toggles' },
     { '<leader>w', group = '󰆓 Advanced Save' },
     { '<leader>y', group = '󰅎 Yank' },
